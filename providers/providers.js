@@ -4,5 +4,5 @@
  * @property {function} s3 - AWS S3 object storage
  */
 module.exports = {
-	s3: require( './aws-s3' )
+  s3: require( './aws-s3' )
 };
