@@ -23,15 +23,14 @@ First of all, replace the values in [examples/config.template.js|examples/config
 3. Run via `npm start`:  
 
     ```sh
-    npm install mongo-cloud-to-storage
+    git clone https://github.com/clounie/mongo-cloud-to-storage.git
     ##
     # Place config.js in the containing folder
     # File tree would look like:
-    #   node_modules
-    #      mongo-cloud-to-storage/
-    #         config.js
+    #   mongo-cloud-to-storage/
+    #      config.js
     ##
-    cd node_modules/mongo-cloud-to-storage
+    cd mongo-cloud-to-storage
     npm start
     ```
 
