@@ -2,7 +2,7 @@
   "name": "mongo-cloud-to-storage",
   "version": "0.1.0",
   "description": "Streams DB backups from Mongo Cloud Manager to cloud storage providers",
-  "main": "index",
+  "main": "stream-backups",
   "scripts": {
   	"start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

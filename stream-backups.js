@@ -15,13 +15,35 @@ const MongoDeployment = require( './lib/mongo-deployment' );
 /**
  * Initializes deployments/providers, then executes the backups for each mongoDeployment in config
  */
-function streamBackups ( )
+function streamBackups ( config, cb )
 {
+  if ( typeof config === 'function' ) {
+    cb = config;
+    config = null;
+  }
+  cb = cb || function ( e ) { throw new Error ( e ); };
+
+  // Let them pass in a string filepath if they want
+  if ( _.isString( config ) ) {
+    try {
+      config = require( config );
+    } catch ( e ) {
+      if ( cb ) {
+        return cb( e );
+      }
+      throw new Error( e );
+    }
+  }
+
   async.waterfall( [
-    initializeDeploymentsAndProviders,
+    initializeDeploymentsAndProviders.bind( null, config ),
     backupDeployments
   ], function ( err, result ) {
-    if ( err ) {
+    if ( err )
+    {
+      if ( cb ) {
+        return cb( err );
+      }
       throw new Error( err );
     }
     console.log( '--Finished Upload--\n\nSummary:' );
@@ -44,13 +66,13 @@ function initializeDeploymentsAndProviders ( config, cb )
     cb = config;
     config = null;
   }
-  cb = cb || function () { };
+  cb = cb || function (e) { throw new Error( e ); };
 
   // If config DNE, default to ./config.js|json
   try {
     config = config || require( './config' );
   } catch ( e ) {
-
+    return cb( e );   
   }
 
   // Error upon bad config
