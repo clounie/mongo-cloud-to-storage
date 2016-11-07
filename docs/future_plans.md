@@ -1,0 +1,1 @@
+1. Convert providers to use a real ProviderInstance concept by having provider inherit a provider-instance-template

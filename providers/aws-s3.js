@@ -1,20 +1,24 @@
 'use strict';
 
 // npm modules
-const _ = require( 'lodash' );
 const request = require( 'request' );
 const streamingS3 = require( 'streaming-s3' );
 
 // Local modules
-const config = require( '../config' );
+let config = null;
 
-module.exports.upload = upload;
+module.exports = AwsS3Provider;
 
-function upload( url, timestamp )
+function AwsS3Provider ( initConfig )
+{
+  config = initConfig;
+}
+
+AwsS3Provider.prototype.upload = function ( uploadObj )
 {
   var uploadBucketConfig = {
-    Bucket: config.aws.s3BucketName,
-    Key: 'mongo-cloud-backup_' + timestamp + '.tar.gz', // Name of destination file
+    Bucket: config.s3BucketName,
+    Key: 'mongo-cloud-backup_' + uploadObj.timestamp + '.tar.gz', // Name of destination file
     ContentType: 'application/x-gzip'
   };
   var streamOpts = {
@@ -24,8 +28,8 @@ function upload( url, timestamp )
     maxPartSize: 10*1024*1024, // Divide into 10 MiB pieces
   };
 
-  var rStream = request.get( url );
-  var uploader = new streamingS3( rStream, config.aws.accessKeyId, config.aws.secretKey, uploadBucketConfig, streamOpts );
+  var rStream = request.get( uploadObj.downloadUrl );
+  var uploader = new streamingS3( rStream, config.accessKeyId, config.secretKey, uploadBucketConfig, streamOpts );
 
   uploader.begin(); // important if callback not provided.
 
@@ -49,4 +53,4 @@ function upload( url, timestamp )
   uploader.on('error', function (e) {
     console.log('Upload error: ', e);
   });
-}
+};
