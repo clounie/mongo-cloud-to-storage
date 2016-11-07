@@ -60,7 +60,7 @@ function streamBackups ( config, cb )
  */
 function initializeDeploymentsAndProviders ( config, cb )
 {
-  console.log( '--Initializing deployments and providers--' );
+  console.log( 'I. Initializing deployments and providers--' );
   // Handle config and/or cb not being passed
   if ( typeof config === 'function' ) {
     cb = config;
@@ -87,7 +87,8 @@ function initializeDeploymentsAndProviders ( config, cb )
   // 1. Create a MongoDeployment instance for each deployment in the config
   //    ..but only if it has providers attached, to which we can upload files
   _.forOwn( config.mongoDeployments, function ( deploymentConfig ) {
-    if ( deploymentConfig.providerInstances && deploymentConfig.providerInstances.length ) {
+    if ( deploymentConfig.providerInstances && deploymentConfig.providerInstances.length ) 
+    {
       var validProviders = _.filter( deploymentConfig.providerInstances, _.isString );
       mongoDeployments.push( new MongoDeployment().init( deploymentConfig ) );
       masterProviderList = masterProviderList.concat( validProviders );
@@ -118,8 +119,8 @@ function initializeDeploymentsAndProviders ( config, cb )
     }
 
     // d) Initialize the ProviderInstance
-    console.log( '...Initializing providerInstance: ', providerInstanceName );
-    providerInstances[providerInstanceName] = new providerList[providerName]( providerConfig );
+    providerInstances[providerInstanceName] = new providerList[providerName]().init( providerConfig );
+    console.log( ' * Initialized providerInstance: ', providerInstanceName );
   });
   cb();
 }
@@ -130,7 +131,7 @@ function initializeDeploymentsAndProviders ( config, cb )
  */
 function backupDeployments ( cb )
 {
-  console.log( 'backing up each of: ', mongoDeployments );
+  console.log( '\nII. Backing up deployments; backing up a total of ' + mongoDeployments.length + ' deployments' );
   async.eachSeries( mongoDeployments, backupDeployment, cb );
 }
 
@@ -143,10 +144,12 @@ function backupDeployments ( cb )
  */
 function backupDeployment ( mongoDeployment, cb )
 {
-  console.log( 'backing up deployment: ', mongoDeployment );
   // console.log( 'deployment.provi
   async.eachSeries( mongoDeployment.config.providerInstances, function ( providerInstanceName ) {
-    console.log( 'backing deployment to provider: ', providerInstanceName );
+    console.log( '  Currently sending backups for deployment with username [' +
+                 mongoDeployment.config.username + 
+                 '] to provider: [' +
+                 providerInstanceName + ']' );
     backupDeploymentToProvider( 
       mongoDeployment, 
       providerInstances[providerInstanceName], 
@@ -177,7 +180,7 @@ function backupDeploymentToProvider ( mongoDeployment, providerInstance, cb )
     mongoDeployment.listSnapshotsOfCluster.bind( mongoDeployment ),
     mongoDeployment.createRestoreJobForLatestSnapshot.bind( mongoDeployment ),
     mongoDeployment.getDownloadInfoFromRestoreJobList.bind( mongoDeployment ),
-    providerInstance.upload,
+    providerInstance.upload.bind( providerInstance ),
   ];
   async.waterfall( tasks, cb );  
 }
