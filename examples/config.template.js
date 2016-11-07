@@ -18,7 +18,7 @@ module.exports = {
       apiKey: '<api key>',
       groupId: '<group id>',
       replicaSetName: '<replica set name>',
-      providerInstances: [ 'aws.firstAwsInstance' ],
+      providerInstances: [ '<provider>.<provider-instance-name>' ], /** e.g. 'aws.firstAwsProviderInstance' */
       clusterId: null
     }
   },
@@ -43,7 +43,7 @@ module.exports = {
       myAwsAccount: {
         accessKeyId: '<your AWS access key id>',
         secretKey: '<your AWS secret key',
-        s3BucketName: '<your s3 bucket name, with no s3:// prefix>'
+        s3BucketName: '<your s3 bucket name, with or without the s3:// prefix>'
       },      
     }
   }

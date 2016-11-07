@@ -23,12 +23,13 @@ function AwsS3Provider ( )
 AwsS3Provider.prototype.init = function ( initConfig )
 {
   this.config = initConfig;
+  this.config.s3BucketName = this.config.s3BucketName.replace( 's3://', '' )
   return this; 
 };
 
 AwsS3Provider.prototype.upload = function ( uploadObj )
 {
-  console.log( '    6. Uploading to provider bucket: ', this.config.s3BucketName );  
+  console.log( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );  
   var uploadBucketConfig = {
     Bucket: this.config.s3BucketName,
     Key: 'mongo-cloud-backup_' + uploadObj.timestamp + '.tar.gz', // Name of destination file
