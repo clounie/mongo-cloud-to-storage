@@ -5,7 +5,7 @@ Transfers files from Mongo Cloud Manager to cloud storage using streams
 `npm install mongo-cloud-to-storage`
 
 ## Usage
-First of all, replace the values in [examples/config.template.js|examples/config.template.js] with your own. Then, try one of the below options for running it:
+First of all, replace the values in [examples/config.template.js](examples/config.template.js) with your own. Then, try one of the below options for running it:
 
 1. Pass in your config object:  
 
