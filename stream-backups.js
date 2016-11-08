@@ -1,3 +1,4 @@
+'use strict';
 module.exports = streamBackups;
 
 /** npm modules */
@@ -14,6 +15,10 @@ const MongoDeployment = require( './lib/mongo-deployment' );
 
 /**
  * Initializes deployments/providers, then executes the backups for each mongoDeployment in config
+ *
+ * @param {string|Object} config - Contains Mongo Cloud Manager + storage provider info;
+ * @param {requestCallback} cb - Callback
+ * @returns {?function} - returnCallback if there's an error, otherwise doesn't return
  */
 function streamBackups ( config, cb )
 {
@@ -21,7 +26,7 @@ function streamBackups ( config, cb )
     cb = config;
     config = null;
   }
-  cb = cb || function ( e ) { throw new Error ( e ); };
+  cb = cb || function ( e ) { throw new Error( e ); };
 
   // Let them pass in a string filepath if they want
   if ( _.isString( config ) ) {
@@ -54,9 +59,10 @@ function streamBackups ( config, cb )
 /**
  * Creates the deployment and provider objects necessary to run backups
  *
- * @param {object} config - Contains Mongo Cloud Manager + storage provider info;
+ * @param {Object} config - Contains Mongo Cloud Manager + storage provider info;
  *                           defaults to ./config.js if not passed in
  * @param {requestCallback} cb - Callback
+ * @returns {?function} - returnCallback if there's an error, otherwise doesn't return 
  */
 function initializeDeploymentsAndProviders ( config, cb )
 {
@@ -128,6 +134,7 @@ function initializeDeploymentsAndProviders ( config, cb )
 
 /**
  * Streams a backup from Mongo Cloud Manager to the requested storage provider
+ * @param {requestCallback} cb - Callback 
  */
 function backupDeployments ( cb )
 {
@@ -180,7 +187,7 @@ function backupDeploymentToProvider ( mongoDeployment, providerInstance, cb )
     mongoDeployment.listSnapshotsOfCluster.bind( mongoDeployment ),
     mongoDeployment.createRestoreJobForLatestSnapshot.bind( mongoDeployment ),
     mongoDeployment.getDownloadInfoFromRestoreJobList.bind( mongoDeployment ),
-    providerInstance.upload.bind( providerInstance ),
+    providerInstance.upload.bind( providerInstance )
   ];
   async.waterfall( tasks, cb );  
 }

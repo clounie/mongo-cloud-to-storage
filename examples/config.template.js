@@ -1,3 +1,4 @@
+'use strict';
 module.exports = {
   /**
    * Mongo Cloud Manager Deployment
@@ -44,7 +45,7 @@ module.exports = {
         accessKeyId: '<your AWS access key id>',
         secretKey: '<your AWS secret key',
         s3BucketName: '<your s3 bucket name, with or without the s3:// prefix>'
-      },      
+      }
     }
   }
 };

@@ -5,6 +5,7 @@
   "main": "stream-backups",
   "scripts": {
   	"start": "node index.js",
+    "lint": "eslint --quiet -c .eslint-local.json . || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
