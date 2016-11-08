@@ -1,13 +1,13 @@
 {
   "name": "mongo-cloud-to-storage",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Streams DB backups from Mongo Cloud Manager to cloud storage providers",
   "main": "stream-backups",
   "scripts": {
-  	"start": "node index.js",
+    "start": "node index.js",
     "lint": "eslint --quiet -c ./__eslint-rules/.eslint-local.json . || true",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "git clone https://github.com/clounie/eslint-rules.git __eslint-rules"
+    "postinstall": "git clone https://github.com/clounie/eslint-rules.git __eslint-rules || true"
   },
   "author": {
     "name": "Bruce W. Clounie",
@@ -15,14 +15,15 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "async": "^2.1.2",
     "express": "^4.14.0",
     "lodash": "^4.16.6",
     "request": "^2.78.0",
     "streaming-s3": "^0.4.1"
   },
-  "bugs": { 
-    "url" : "https://github.com/clounie/mongo-cloud-to-storage/issues",
-    "email" : "bruce.w.clounie@gmail.com"
+  "bugs": {
+    "url": "https://github.com/clounie/mongo-cloud-to-storage/issues",
+    "email": "bruce.w.clounie@gmail.com"
   },
   "repository": {
     "type": "git",
