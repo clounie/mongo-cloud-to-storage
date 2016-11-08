@@ -1,6 +1,6 @@
 {
   "name": "mongo-cloud-to-storage",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "Streams DB backups from Mongo Cloud Manager to cloud storage providers",
   "main": "stream-backups",
   "scripts": {

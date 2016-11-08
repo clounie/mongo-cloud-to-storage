@@ -183,7 +183,7 @@ function backupDeploymentToProvider ( mongoDeployment, providerInstance, cb )
    */
   const tasks = [
     mongoDeployment.listClustersOfGroup.bind( mongoDeployment ),
-    mongoDeployment.getClusterByReplicaSetId.bind( mongoDeployment ),
+    mongoDeployment.findClusterByReplicaSetId.bind( mongoDeployment ),
     mongoDeployment.listSnapshotsOfCluster.bind( mongoDeployment ),
     mongoDeployment.createRestoreJobForLatestSnapshot.bind( mongoDeployment ),
     mongoDeployment.getDownloadInfoFromRestoreJobList.bind( mongoDeployment ),

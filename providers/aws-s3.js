@@ -33,12 +33,12 @@ AwsS3Provider.prototype.init = function ( initConfig )
  *
  * @param {Object} uploadObj - Configuration options for uploading a file to AWS S3
  */
-AwsS3Provider.prototype.upload = function ( uploadObj )
+AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
 {
   console.log( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );  
   var uploadBucketConfig = {
     Bucket: this.config.s3BucketName,
-    Key: 'mongo-cloud-backup_' + uploadObj.timestamp + '.tar.gz', // Name of destination file
+    Key: destinationFile,
     ContentType: 'application/x-gzip'
   };
   var streamOpts = {
@@ -48,7 +48,7 @@ AwsS3Provider.prototype.upload = function ( uploadObj )
     maxPartSize: 10*1024*1024 // Divide into 10 MiB pieces
   };
 
-  var rStream = request.get( uploadObj.downloadUrl );
+  var rStream = request.get( downloadUrl );
   var uploader = new StreamingS3( rStream, this.config.accessKeyId, this.config.secretKey, uploadBucketConfig, streamOpts );
 
   uploader.begin(); // important if callback not provided.
@@ -64,7 +64,8 @@ AwsS3Provider.prototype.upload = function ( uploadObj )
 
   // All parts uploaded, but upload not yet acknowledged.
   uploader.on('uploaded', function (stats) {
-    console.log('      Upload stats: ', JSON.stringify( stats ) );
+    console.log( '      Uploaded to file: ', destinationFile );
+    console.log( '      Upload stats: ', JSON.stringify( stats ) );
   });
 
   // uploader.on('finished', function (resp, stats) {
