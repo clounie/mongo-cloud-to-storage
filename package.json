@@ -1,12 +1,12 @@
 {
   "name": "mongo-cloud-to-storage",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Streams DB backups from Mongo Cloud Manager to cloud storage providers",
   "main": "stream-backups",
   "scripts": {
     "start": "node index.js",
     "lint": "eslint --quiet -c ./__eslint-rules/.eslint-local.json . || true",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test/jasmine-config/jasmine-runner.js",
     "postinstall": "git clone https://github.com/clounie/eslint-rules.git __eslint-rules || true"
   },
   "author": {
@@ -31,5 +31,11 @@
   },
   "engines": {
     "node": ">=4.0.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.5.2",
+    "jasmine-expect": "^3.0.1",
+    "jasmine-spec-reporter": "^2.7.0",
+    "supertest": "^2.0.1"
   }
 }

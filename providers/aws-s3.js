@@ -31,7 +31,8 @@ AwsS3Provider.prototype.init = function ( initConfig )
 /**
  * Receives an uploadObj and uploads files to AWS S3 based on its values
  *
- * @param {Object} uploadObj - Configuration options for uploading a file to AWS S3
+ * @param {string} downloadUrl - URL holding the Mongo Cloud backup file (tar.gz)
+ * @param {string} destinationFile - Path in the S3 bucket where the backup file will be saved
  */
 AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
 {
