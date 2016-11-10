@@ -4,6 +4,7 @@ module.exports = streamBackups;
 /** npm modules */
 const _ = require( 'lodash' );
 const async = require( 'async' );
+const debug = require( 'debug' )( 'stream-backups' );
 
 // TODO https://github.com/freeall/single-line-log
 
@@ -51,8 +52,8 @@ function streamBackups ( config, cb )
       }
       throw new Error( err );
     }
-    console.log( '--Finished Upload--\n\nSummary:' );
-    console.log( JSON.stringify( result, null, 4 ) );  
+    debug( '--Finished Upload--\n\nSummary:' );
+    debug( JSON.stringify( result, null, 4 ) );  
   });
 }
 
@@ -66,7 +67,7 @@ function streamBackups ( config, cb )
  */
 function initializeDeploymentsAndProviders ( config, cb )
 {
-  console.log( 'I. Initializing deployments and providers--' );
+  debug( 'I. Initializing deployments and providers--' );
   // Handle config and/or cb not being passed
   if ( typeof config === 'function' ) {
     cb = config;
@@ -126,7 +127,7 @@ function initializeDeploymentsAndProviders ( config, cb )
 
     // d) Initialize the ProviderInstance
     providerInstances[providerInstanceName] = new providerList[providerName]().init( providerConfig );
-    console.log( ' * Initialized providerInstance: ', providerInstanceName );
+    debug( ' * Initialized providerInstance: ', providerInstanceName );
   });
   cb();
 }
@@ -138,7 +139,7 @@ function initializeDeploymentsAndProviders ( config, cb )
  */
 function backupDeployments ( cb )
 {
-  console.log( '\nII. Backing up deployments; backing up a total of ' + mongoDeployments.length + ' deployments' );
+  debug( '\nII. Backing up deployments; backing up a total of ' + mongoDeployments.length + ' deployments' );
   async.eachSeries( mongoDeployments, backupDeployment, cb );
 }
 
@@ -151,9 +152,9 @@ function backupDeployments ( cb )
  */
 function backupDeployment ( mongoDeployment, cb )
 {
-  // console.log( 'deployment.provi
+  // debug( 'deployment.provi
   async.eachSeries( mongoDeployment.config.providerInstances, function ( providerInstanceName ) {
-    console.log( '  Currently sending backups for deployment with username [' +
+    debug( '  Currently sending backups for deployment with username [' +
                  mongoDeployment.config.username + 
                  '] to provider: [' +
                  providerInstanceName + ']' );

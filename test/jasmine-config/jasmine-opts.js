@@ -1,3 +1,4 @@
+'use strict';
 module.exports = {
   "spec_dir": "test",
   "spec_files": [

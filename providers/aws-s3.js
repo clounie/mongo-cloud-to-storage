@@ -1,6 +1,7 @@
 'use strict';
 
 // npm modules
+const debug = require( 'debug' )( 'provider:aws-s3' );
 const request = require( 'request' );
 const StreamingS3 = require( 'streaming-s3' );
 
@@ -36,7 +37,7 @@ AwsS3Provider.prototype.init = function ( initConfig )
  */
 AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
 {
-  console.log( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );  
+  debug( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );  
   var uploadBucketConfig = {
     Bucket: this.config.s3BucketName,
     Key: destinationFile,
@@ -53,27 +54,27 @@ AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
   var uploader = new StreamingS3( rStream, this.config.accessKeyId, this.config.secretKey, uploadBucketConfig, streamOpts );
 
   uploader.begin(); // important if callback not provided.
-  console.log( '      Upload has begun...' );
+  debug( '      Upload has begun...' );
 
   // uploader.on('data', function (bytesRead) {
-  //   console.log(bytesRead, ' bytes read.');
+  //   debug(bytesRead, ' bytes read.');
   // });
 
   uploader.on('part', function (number) {
-    console.log('      Uploaded: Part ' + number );
+    debug('      Uploaded: Part ' + number );
   });
 
   // All parts uploaded, but upload not yet acknowledged.
   uploader.on('uploaded', function (stats) {
-    console.log( '      Uploaded to file: ', destinationFile );
-    console.log( '      Upload stats: ', JSON.stringify( stats ) );
+    debug( '      Uploaded to file: ', destinationFile );
+    debug( '      Upload stats: ', JSON.stringify( stats ) );
   });
 
   // uploader.on('finished', function (resp, stats) {
-  //   console.log('Upload finished: ', resp);
+  //   debug('Upload finished: ', resp);
   // });
 
   uploader.on('error', function (e) {
-    console.log('      Upload error: ', e);
+    debug('      Upload error: ', e);
   });
 };

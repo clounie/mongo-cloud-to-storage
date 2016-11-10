@@ -1,4 +1,5 @@
 __eslint-rules/
+coverage/
 node_modules/
 config.js
 TODO-*

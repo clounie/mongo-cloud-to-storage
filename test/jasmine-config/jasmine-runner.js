@@ -1,3 +1,4 @@
+'use strict';
 var Jasmine = require('jasmine');
 var SpecReporter = require('jasmine-spec-reporter');
 
@@ -23,11 +24,11 @@ var jasmineSpecReporterConfig = {
     pending: '* '
   },
   customProcessors: []
-}
+};
 
 var jrunner = new Jasmine();
 jrunner.configureDefaultReporter({print: 'noop'});    // jasmine < 2.4.1, remove default reporter logs
 jrunner.env.clearReporters();                       // jasmine >= 2.5.2, remove default reporter logs
 jrunner.addReporter(new SpecReporter( jasmineSpecReporterConfig ));            // add jasmine-spec-reporter
-jrunner.loadConfigFile( './test/jasmine-config/jasmine');                           // load jasmine.json configuration
+jrunner.loadConfigFile( './test/jasmine-config/jasmine-opts');                           // load jasmine.json configuration
 jrunner.execute();
