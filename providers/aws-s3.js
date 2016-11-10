@@ -1,6 +1,7 @@
 'use strict';
 
 // npm modules
+const _ = require( 'lodash' );
 const debug = require( 'debug' )( 'provider:aws-s3' );
 const request = require( 'request' );
 const StreamingS3 = require( 'streaming-s3' );
@@ -34,14 +35,25 @@ AwsS3Provider.prototype.init = function ( initConfig )
  *
  * @param {string} downloadUrl - URL holding the Mongo Cloud backup file (tar.gz)
  * @param {string} destinationFile - Path in the S3 bucket where the backup file will be saved
+ * @param {returnCallback} cb - The callback that handles the response
+ * @returns {?function} - returnCallback if there's an error, otherwise doesn't return
  */
-AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
+AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile, cb )
 {
-  debug( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );  
+  debug( '    6. Uploading to provider bucket: s3://' + this.config.s3BucketName );
+
+  if ( !_.isString( downloadUrl ) || !downloadUrl.length || downloadUrl.indexOf( 'http' ) !== 0 ) {
+    return cb( 'Invalid downloadUrl' );
+  }
+  if ( !_.isString( destinationFile ) || !destinationFile.length ) {
+    return cb( 'Invalid destinationFile' );
+  }
+
   var uploadBucketConfig = {
     Bucket: this.config.s3BucketName,
     Key: destinationFile,
-    ContentType: 'application/x-gzip'
+    ContentType: 'application/x-gzip',
+    ACL: 'public-read'
   };
   var streamOpts = {
     concurrentParts: 10,
@@ -51,14 +63,20 @@ AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
   };
 
   var rStream = request.get( downloadUrl );
-  var uploader = new StreamingS3( rStream, this.config.accessKeyId, this.config.secretKey, uploadBucketConfig, streamOpts );
+  var uploader = new StreamingS3( 
+    rStream, 
+    this.config.accessKeyId, 
+    this.config.secretKey, 
+    uploadBucketConfig, 
+    streamOpts 
+  );
 
   uploader.begin(); // important if callback not provided.
   debug( '      Upload has begun...' );
 
-  // uploader.on('data', function (bytesRead) {
-  //   debug(bytesRead, ' bytes read.');
-  // });
+  uploader.on('data', function (bytesRead) {
+    debug(bytesRead, ' bytes read.');
+  });
 
   uploader.on('part', function (number) {
     debug('      Uploaded: Part ' + number );
@@ -68,6 +86,7 @@ AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
   uploader.on('uploaded', function (stats) {
     debug( '      Uploaded to file: ', destinationFile );
     debug( '      Upload stats: ', JSON.stringify( stats ) );
+    cb( null, stats );
   });
 
   // uploader.on('finished', function (resp, stats) {
@@ -76,5 +95,13 @@ AwsS3Provider.prototype.upload = function ( downloadUrl, destinationFile )
 
   uploader.on('error', function (e) {
     debug('      Upload error: ', e);
+    return cb( e );
   });
 };
+
+/**
+ * Generic callback syntax
+ * @callback requestCallback
+ * @param {string} errorMessage
+ * @param {Object} responseData
+ */

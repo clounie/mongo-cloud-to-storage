@@ -34,17 +34,14 @@ function streamBackups ( config, cb )
     try {
       config = require( config );
     } catch ( e ) {
-      if ( cb ) {
-        return cb( e );
-      }
-      throw new Error( e );
+      return cb( e );
     }
   }
 
   async.waterfall( [
     initializeDeploymentsAndProviders.bind( null, config ),
     backupDeployments
-  ], function ( err, result ) {
+  ], function ( err/*, result*/ ) {
     if ( err )
     {
       if ( cb ) {
@@ -52,8 +49,8 @@ function streamBackups ( config, cb )
       }
       throw new Error( err );
     }
-    debug( '--Finished Upload--\n\nSummary:' );
-    debug( JSON.stringify( result, null, 4 ) );  
+    debug( '--Finished Upload--' );
+    // debug( JSON.stringify( result, null, 4 ) );
   });
 }
 
@@ -176,18 +173,8 @@ function backupDeployment ( mongoDeployment, cb )
  */
 function backupDeploymentToProvider ( mongoDeployment, providerInstance, cb )
 {
-  /**
-   * List of tasks to waterfall, each passing its results to the next in line
-   *
-   * Each task gets passed all arguments from the previous task, except the error.
-   * If a function passes an error, the rest are skipped and processFinalResult is called.
-   */
   const tasks = [
-    mongoDeployment.listClustersOfGroup.bind( mongoDeployment ),
-    mongoDeployment.findClusterByReplicaSetId.bind( mongoDeployment ),
-    mongoDeployment.listSnapshotsOfCluster.bind( mongoDeployment ),
-    mongoDeployment.createRestoreJobForLatestSnapshot.bind( mongoDeployment ),
-    mongoDeployment.getDownloadInfoFromRestoreJobList.bind( mongoDeployment ),
+    mongoDeployment.getDownloadAndUploadInfo.bind( mongoDeployment ),
     providerInstance.upload.bind( providerInstance )
   ];
   async.waterfall( tasks, cb );  

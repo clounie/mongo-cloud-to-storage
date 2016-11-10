@@ -1,6 +1,6 @@
 {
   "name": "mongo-cloud-to-storage",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Streams DB backups from Mongo Cloud Manager to cloud storage providers",
   "main": "stream-backups",
   "scripts": {
@@ -23,7 +23,8 @@
     "istanbul": "^0.4.5",
     "lodash": "^4.16.6",
     "request": "^2.78.0",
-    "streaming-s3": "^0.4.1"
+    "streaming-s3": "^0.4.1",
+    "superagent": "^2.3.0"
   },
   "bugs": {
     "url": "https://github.com/clounie/mongo-cloud-to-storage/issues",

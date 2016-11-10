@@ -17,7 +17,6 @@ describe("Mongo Deployment", function() {
 
   before(function() {
     mongoDeployment = new MongoDeployment();
-    console.log( 'NOTE: in tests, MD = MongoDeployment instance' );
   });
 
   describe( 'MongoDeployment', function () 
@@ -114,11 +113,11 @@ describe("Mongo Deployment", function() {
     });
   });
 
-  describe( 'findClusterByReplicaSetId', function () 
+  describe( 'findClusterByReplicaSetName', function () 
   {
     describe( 'Given: a valid list of clusters', function () {
       it( 'Should error if cluster is invalid', function () {
-        mongoDeployment.findClusterByReplicaSetId( null, function ( err ) {
+        mongoDeployment.findClusterByReplicaSetName( null, function ( err ) {
           expect( err ).toBeNonEmptyString();
         });
       });
@@ -127,7 +126,7 @@ describe("Mongo Deployment", function() {
       it( 'Should error if replicaSetName is invalid', function ( done ) {
         let backupReplicaSetName = mongoDeployment.config.replicaSetName;
         mongoDeployment.config.replicaSetName = null;
-        mongoDeployment.findClusterByReplicaSetId( globalTestVars.clusterList, function ( err ) {
+        mongoDeployment.findClusterByReplicaSetName( globalTestVars.clusterList, function ( err ) {
           expect( err ).toBeNonEmptyString();
           mongoDeployment.config.replicaSetName = backupReplicaSetName;
           done();
@@ -136,10 +135,10 @@ describe("Mongo Deployment", function() {
     });
     describe( 'Then: Give me a clusterId', function () {
       it( 'Should callback with a (string) clusterId when it has valid params', function ( done ) {
-        mongoDeployment.findClusterByReplicaSetId( globalTestVars.clusterList, function ( err, clusterId ) {
+        mongoDeployment.findClusterByReplicaSetName( globalTestVars.clusterList, function ( err ) {
           expect( err ).toBeNull();
-          expect( clusterId ).toBeNonEmptyString();
-          globalTestVars.clusterId = clusterId;
+          expect( mongoDeployment.config.clusterId ).toBeNonEmptyString();
+          globalTestVars.clusterId = mongoDeployment.config.clusterId;
           done();
         });
       });
